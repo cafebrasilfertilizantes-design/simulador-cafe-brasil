@@ -762,7 +762,7 @@ tbody td{padding:10px 8px;border-bottom:1px solid #eee;}
       <div class="val" id="h-total">R$ 0,00</div>
       <div class="hint">Valor de tabela</div>
     </div>
-    <div class="block big">
+    <div class="block big" id="hero-eco-block">
       <div class="lbl">Você economiza</div>
       <div class="val" id="h-eco">R$ 0,00</div>
       <div class="hint" id="h-eco-hint">Adicione produtos para ver o ganho</div>
@@ -770,7 +770,7 @@ tbody td{padding:10px 8px;border-bottom:1px solid #eee;}
     <div class="block">
       <div class="lbl">Valor a pagar</div>
       <div class="val" id="h-liq">R$ 0,00</div>
-      <div class="hint">Com desconto da campanha</div>
+      <div class="hint" id="hero-pagar-hint">Com desconto da campanha</div>
     </div>
   </div>
 
@@ -830,13 +830,13 @@ tbody td{padding:10px 8px;border-bottom:1px solid #eee;}
       <!-- TOTAIS -->
       <div class="totais">
         <div class="it"><div class="lbl">Total Bruto</div><div class="val" id="t-bruto">R$ 0,00</div></div>
-        <div class="it eco"><div class="lbl">Economia</div><div class="val" id="t-eco">R$ 0,00</div></div>
+        <div class="it eco" id="t-eco-block"><div class="lbl">Economia</div><div class="val" id="t-eco">R$ 0,00</div></div>
         <div class="it"><div class="lbl">Total a Pagar</div><div class="val" id="t-liq">R$ 0,00</div></div>
       </div>
     </div>
 
     <!-- COLUNA DIREITA: TONELADAS BONIFICADAS -->
-    <div>
+    <div id="col-campanha">
       <div class="panel">
         <div class="panel-h">Toneladas com Desconto</div>
         <div class="panel-body">
@@ -1025,6 +1025,10 @@ let DIVISOR_TRAT  = 0.900;       // Foliar / Adjuvante / Biológico
 let REGIAO_ATIVA = "MG";         // MG / MANHUACU / SP / CERRADO
 let CONDICAO_ATIVA = "prazo";    // vista / prazo
 
+// CAMPANHA DE DESCONTO PROGRESSIVO
+// Defina como true para reativar os Pacotes 1 e 2 da campanha de desconto
+const CAMPANHA_ATIVA = false;
+
 const REGIOES_LABEL = {MG:"MG (Minas Gerais)", MANHUACU:"Manhuaçu (Zona da Mata)", SP:"São Paulo", CERRADO:"Cerrado Mineiro"};
 const CONDICOES_LABEL = {vista:"À Vista", prazo:"A Prazo (30/09/2026)"};
 
@@ -1087,8 +1091,37 @@ function iniciarSimulacao(){
   document.getElementById("d-vendedor").textContent = document.getElementById("s-vendedor").value || "—";
 
   document.getElementById("setup-screen").style.display = "none";
+  aplicarVisibilidadeCampanha();
   popularProdutos();
   recalcular();
+}
+
+// Esconde / mostra os blocos de campanha conforme CAMPANHA_ATIVA
+function aplicarVisibilidadeCampanha(){
+  if(CAMPANHA_ATIVA) return;
+  const ids = ["hero-eco-block","prog-wrap","t-eco-block","col-campanha"];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = "none";
+  });
+  // Ajustar o hero para 2 colunas em vez de 3
+  const hero = document.querySelector(".hero");
+  if(hero) hero.style.gridTemplateColumns = "1fr 1fr";
+  // Mudar texto "Com desconto da campanha" para "Valor do pedido"
+  const hint = document.getElementById("hero-pagar-hint");
+  if(hint) hint.textContent = "Valor final";
+  // Ajustar totais para 2 colunas
+  const totais = document.querySelector(".totais");
+  if(totais) totais.style.gridTemplateColumns = "1fr 1fr";
+  // A grade do pedido agora colspan da empty muda — remove coluna Desconto via CSS
+  const style = document.createElement("style");
+  style.textContent = `
+    table thead th:nth-child(6), table tbody td:nth-child(6){display:none;}
+    @media(max-width:680px){
+      table tbody td:nth-child(6){display:none !important;}
+    }
+  `;
+  document.head.appendChild(style);
 }
 function abrirSetup(){
   document.getElementById("setup-screen").style.display = "flex";
@@ -1374,7 +1407,12 @@ function calcular(){
 
   const c21 = cenario(345,0.03);
   const c22 = cenario(604,0.045);
-  const escolhida = c22.economia >= c21.economia ? c22 : c21;
+  let escolhida = c22.economia >= c21.economia ? c22 : c21;
+
+  // Se a campanha estiver desativada, zera tudo (mantém estrutura para evitar erros)
+  if(!CAMPANHA_ATIVA){
+    escolhida = {gatilho:0,pct:0,bonif:0,economia:0,detalhes:[],maxBonif:0};
+  }
 
   return {elegivel,ciclusTons,escolhida,c21,c22};
 }
