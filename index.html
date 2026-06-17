@@ -461,6 +461,27 @@ tbody td{padding:10px 8px;border-bottom:1px solid #eee;}
 .regiao-star{font-size:14px;}
 .regiao-sub{color:#aaa;font-size:11px;font-weight:400;text-transform:none;letter-spacing:0;}
 .regiao-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.condicao-section{
+  background:linear-gradient(135deg,#1f8a3a 0%,#0a5024 100%);
+  border:2px solid #fff;
+  position:relative;
+}
+.condicao-section .regiao-titulo{color:#fff;}
+.condicao-section .regiao-sub{color:rgba(255,255,255,0.8);}
+.condicao-section .regiao-card{
+  background:rgba(255,255,255,0.1);
+  border-color:rgba(255,255,255,0.3);
+}
+.condicao-section .regiao-opt:hover .regiao-card{
+  background:rgba(255,255,255,0.2);border-color:#fff;
+}
+.condicao-section .regiao-opt input:checked + .regiao-card{
+  background:#fff;border-color:#fff;
+}
+.condicao-section .regiao-opt input:checked + .regiao-card .regiao-nome{color:var(--verde);}
+.condicao-section .regiao-opt input:checked + .regiao-card .regiao-desc{color:#000;}
+.condicao-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.condicao-section .regiao-card{padding:18px 12px;}
 .regiao-opt{cursor:pointer;}
 .regiao-opt input{position:absolute;opacity:0;pointer-events:none;}
 .regiao-card{
@@ -586,6 +607,28 @@ tbody td{padding:10px 8px;border-bottom:1px solid #eee;}
       </div>
     </div>
 
+    <div class="setup-section regiao-section condicao-section">
+      <div class="regiao-titulo">
+        <span class="regiao-star">💰</span> CONDIÇÃO DE PAGAMENTO <span class="regiao-sub">— define a tabela de preços</span>
+      </div>
+      <div class="condicao-grid">
+        <label class="regiao-opt">
+          <input type="radio" name="s-condicao" value="prazo" checked>
+          <div class="regiao-card">
+            <div class="regiao-nome">A Prazo</div>
+            <div class="regiao-desc">Vencimento 30/09/2026<br>Faturamento antecipado</div>
+          </div>
+        </label>
+        <label class="regiao-opt">
+          <input type="radio" name="s-condicao" value="vista">
+          <div class="regiao-card">
+            <div class="regiao-nome">À Vista</div>
+            <div class="regiao-desc">Pagamento imediato<br>Preço diferenciado</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
     <div class="setup-section regiao-section">
       <div class="regiao-titulo">
         <span class="regiao-star">★</span> REGIÃO DO CLIENTE <span class="regiao-sub">— preços aplicados conforme a região</span>
@@ -703,6 +746,7 @@ tbody td{padding:10px 8px;border-bottom:1px solid #eee;}
     <div class="ident-row">
       <div class="ident-item"><span class="lbl">Cliente</span><span class="val" id="d-cliente">—</span></div>
       <div class="ident-item"><span class="lbl">CPF/CNPJ</span><span class="val" id="d-doc">—</span></div>
+      <div class="ident-item"><span class="lbl">Condição</span><span class="val" id="d-condicao" style="color:var(--verde);">—</span></div>
       <div class="ident-item"><span class="lbl">Região</span><span class="val" id="d-regiao" style="color:var(--verde);">—</span></div>
       <div class="ident-item"><span class="lbl">Unidade Cooperativa</span><span class="val" id="d-unidade">—</span></div>
       <div class="ident-item"><span class="lbl">Consultor Cooperativa</span><span class="val" id="d-consultor">—</span></div>
@@ -912,82 +956,85 @@ document.getElementById("login-user").addEventListener("keydown", e => {
 });
 
 // ============ CATÁLOGO ============
-// Catálogo com preços por região (MG / Manhuaçu / SP / Cerrado)
+// Catálogo com preços por região (MG/Manhuaçu/SP/Cerrado) e condição (vista/prazo)
 const CATALOGO = [
-  {sku:"1",cod_coop:"59938",nome:"Fertilizante NPK 19-04-19 +0,3%B +0,3%ZN CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6363.40,MANHUACU:6507.50,SP:6357.86,CERRADO:6413.28}},
-  {sku:"2",cod_coop:"59934",nome:"Fertilizante NPK 19-04-19 +0,3%B +0,3%ZN CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6363.40,MANHUACU:6507.50,SP:6357.86,CERRADO:6413.28}},
-  {sku:"3",cod_coop:"59931",nome:"Fertilizante NPK 19-04-19 +0,3%B +0,3%ZN CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6363.40,MANHUACU:6507.50,SP:6357.86,CERRADO:6413.28}},
-  {sku:"4",cod_coop:"54333",nome:"Fertilizante NK 21-00-21 +3,27%S Mistura de Grânulos CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6195.94,MANHUACU:6340.13,SP:6190.40,CERRADO:6245.85}},
-  {sku:"5",cod_coop:"56194",nome:"Fertilizante NK 23-00-15 +0,5%B Granulado CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6344.30,MANHUACU:6488.56,SP:6338.75,CERRADO:6394.23}},
-  {sku:"6",cod_coop:"56193",nome:"Fertilizante NK 23-00-15 +0,5%B Granulado CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6344.30,MANHUACU:6488.56,SP:6338.75,CERRADO:6394.23}},
-  {sku:"7",cod_coop:"56192",nome:"Fertilizante NK 23-00-15 +0,5%B Granulado CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6344.30,MANHUACU:6488.56,SP:6338.75,CERRADO:6394.23}},
-  {sku:"8",cod_coop:"53781",nome:"Fertilizante NK 23-00-18 +3,5%S bag CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6271.11,MANHUACU:6415.47,SP:6265.56,CERRADO:6321.08}},
-  {sku:"9",cod_coop:"53780",nome:"Fertilizante NK 23-00-18 +3,5%S CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6271.11,MANHUACU:6415.47,SP:6265.56,CERRADO:6321.08}},
-  {sku:"10",cod_coop:"56867",nome:"Fertilizante NK 23-00-18 +3,5%S CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6271.11,MANHUACU:6415.47,SP:6265.56,CERRADO:6321.08}},
-  {sku:"11",cod_coop:"72997",nome:"Fertilizante NPK 24-04-14 +3%S Granulado CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6602.78,MANHUACU:6747.22,SP:6597.22,CERRADO:6652.78}},
-  {sku:"12",cod_coop:"72998",nome:"Fertilizante NPK 24-04-14 +3%S Granulado CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6602.78,MANHUACU:6747.22,SP:6597.22,CERRADO:6652.78}},
-  {sku:"13",cod_coop:"72999",nome:"Fertilizante NPK 24-04-14 +3%S Granulado CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6602.78,MANHUACU:6747.22,SP:6597.22,CERRADO:6652.78}},
-  {sku:"14",cod_coop:"56203",nome:"Fertilizante NK 26-00-12 Granulado CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6415.64,MANHUACU:6560.17,SP:6410.09,CERRADO:6465.67}},
-  {sku:"15",cod_coop:"56202",nome:"Fertilizante NK 26-00-12 Granulado CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6415.64,MANHUACU:6560.17,SP:6410.09,CERRADO:6465.67}},
-  {sku:"16",cod_coop:"56204",nome:"Fertilizante NK 26-00-12 Granulado CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6415.64,MANHUACU:6560.17,SP:6410.09,CERRADO:6465.67}},
-  {sku:"17",cod_coop:"54599",nome:"Fertilizante NP 28-08-00 CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6999.06,MANHUACU:7143.68,SP:6993.50,CERRADO:7049.12}},
-  {sku:"18",cod_coop:"54600",nome:"Fertilizante NP 28-08-00 CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6999.06,MANHUACU:7143.68,SP:6993.50,CERRADO:7049.12}},
-  {sku:"19",cod_coop:"54602",nome:"Fertilizante NP 28-08-00 CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6999.06,MANHUACU:7143.68,SP:6993.50,CERRADO:7049.12}},
-  {sku:"20",cod_coop:"56198",nome:"Fertilizante NK 29-00-06 Granulado CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6558.91,MANHUACU:6703.61,SP:6553.35,CERRADO:6609.00}},
-  {sku:"21",cod_coop:"56197",nome:"Fertilizante NK 29-00-06 Granulado CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6558.91,MANHUACU:6703.61,SP:6553.35,CERRADO:6609.00}},
-  {sku:"22",cod_coop:"56196",nome:"Fertilizante NK 29-00-06 Granulado CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:6558.91,MANHUACU:6703.61,SP:6553.35,CERRADO:6609.00}},
-  {sku:"23",cod_coop:"67353",nome:"Fertilizante 37-00-00 + 4%S Granulado CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:7036.75,MANHUACU:7181.62,SP:7031.18,CERRADO:7086.90}},
-  {sku:"24",cod_coop:"67352",nome:"Fertilizante 37-00-00 + 4%S Granulado CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:7036.75,MANHUACU:7181.62,SP:7031.18,CERRADO:7086.90}},
-  {sku:"25",cod_coop:"67351",nome:"Fertilizante 37-00-00 +4%S Granulado CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:7036.75,MANHUACU:7181.62,SP:7031.18,CERRADO:7086.90}},
-  {sku:"26",cod_coop:"43208",nome:"Fertilizante CICLUS NS Farelado 30-00-00 + 7% S CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:7478.59,MANHUACU:7623.54,SP:7473.01,CERRADO:7528.76}},
-  {sku:"27",cod_coop:"53793",nome:"Fertilizante CICLUS NS Farelado 30-00-00 + 7% S CAFÉ BRASIL Big Bag 500 Kg",familia:"Ciclus",un:"Ton.",precos:{MG:7478.59,MANHUACU:7623.54,SP:7473.01,CERRADO:7528.76}},
-  {sku:"28",cod_coop:"50243",nome:"Fertilizante 10-49-00 PROPHOS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:8085.79,MANHUACU:8230.83,SP:8080.21,CERRADO:8135.99}},
-  {sku:"29",cod_coop:"50244",nome:"Fertilizante 10-49-00 PROPHOS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:8085.79,MANHUACU:8230.83,SP:8080.21,CERRADO:8135.99}},
-  {sku:"30",cod_coop:"50245",nome:"Fertilizante 10-49-00 PROPHOS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:8085.79,MANHUACU:8230.83,SP:8080.21,CERRADO:8135.99}},
-  {sku:"31",cod_coop:"53771",nome:"Fertilizante 08-39-09 +0,3%B +0,3%Zn PROPHOS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:7507.49,MANHUACU:7652.71,SP:7501.91,CERRADO:7557.76}},
-  {sku:"32",cod_coop:"53770",nome:"Fertilizante 08-39-09 +0,3%B +0,3%Zn PROPHOS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG:7507.49,MANHUACU:7652.71,SP:7501.91,CERRADO:7557.76}},
-  {sku:"33",cod_coop:"",nome:"Viça Café NG - 5 KG",familia:"Foliar",un:"Pct",precos:{MG:103.23,MANHUACU:102.10,SP:101.38,CERRADO:89.26}},
-  {sku:"34",cod_coop:"",nome:"Viça Café Nutrição - 3 KG",familia:"Foliar",un:"Pct",precos:{MG:33.68,MANHUACU:33.50,SP:33.07,CERRADO:74.38}},
-  {sku:"35",cod_coop:"",nome:"ALIANCE FULL - 01L",familia:"Adjuvante",un:"L",precos:{MG:90.86,MANHUACU:90.86,SP:90.86,CERRADO:89.26}},
-  {sku:"36",cod_coop:"",nome:"ALIANCE FULL - 05L",familia:"Adjuvante",un:"L",precos:{MG:75.72,MANHUACU:75.72,SP:75.72,CERRADO:74.38}},
-  {sku:"37",cod_coop:"",nome:"ALIANCE ACTION - 01L",familia:"Adjuvante",un:"L",precos:{MG:112.74,MANHUACU:112.74,SP:112.74,CERRADO:110.74}},
-  {sku:"38",cod_coop:"",nome:"ALIANCE ACTION - 05L",familia:"Adjuvante",un:"L",precos:{MG:96.75,MANHUACU:96.75,SP:96.75,CERRADO:95.04}},
-  {sku:"39",cod_coop:"63037",nome:"PRORECOVER FLORADA - 05L",familia:"Foliar",un:"L",precos:{MG:36.00,MANHUACU:36.00,SP:36.00,CERRADO:35.36}},
-  {sku:"40",cod_coop:"63046",nome:"PRORECOVER FLORADA - 20L",familia:"Foliar",un:"L",precos:{MG:32.72,MANHUACU:32.72,SP:32.72,CERRADO:32.14}},
-  {sku:"41",cod_coop:"63038",nome:"PRORECOVER RENEW - 05L",familia:"Foliar",un:"L",precos:{MG:43.47,MANHUACU:43.47,SP:43.47,CERRADO:42.70}},
-  {sku:"42",cod_coop:"63047",nome:"PRORECOVER RENEW - 20L",familia:"Foliar",un:"L",precos:{MG:41.11,MANHUACU:41.11,SP:41.11,CERRADO:40.39}},
-  {sku:"43",cod_coop:"63901",nome:"PRORECOVER POWER PLANT - 01L",familia:"Foliar",un:"L",precos:{MG:101.61,MANHUACU:101.61,SP:101.61,CERRADO:99.81}},
-  {sku:"44",cod_coop:"63039",nome:"PRORECOVER POWER PLANT - 05L",familia:"Foliar",un:"L",precos:{MG:88.11,MANHUACU:88.11,SP:88.11,CERRADO:86.55}},
-  {sku:"45",cod_coop:"63048",nome:"PRORECOVER POWER PLANT - 20L",familia:"Foliar",un:"L",precos:{MG:84.57,MANHUACU:84.57,SP:84.57,CERRADO:83.08}},
-  {sku:"46",cod_coop:"63040",nome:"PRORECOVER RR - 05L",familia:"Foliar",un:"L",precos:{MG:48.16,MANHUACU:48.16,SP:48.16,CERRADO:47.31}},
-  {sku:"47",cod_coop:"63049",nome:"PRORECOVER RR - 20L",familia:"Foliar",un:"L",precos:{MG:42.30,MANHUACU:42.30,SP:42.30,CERRADO:41.55}},
-  {sku:"48",cod_coop:"63041",nome:"PRORECOVER SINK - 05L",familia:"Foliar",un:"L",precos:{MG:35.27,MANHUACU:35.27,SP:35.27,CERRADO:34.65}},
-  {sku:"49",cod_coop:"63050",nome:"PRORECOVER SINK - 20L",familia:"Foliar",un:"L",precos:{MG:32.30,MANHUACU:32.30,SP:32.30,CERRADO:31.72}},
-  {sku:"50",cod_coop:"",nome:"PRORECOVER TURBO Q - 01L",familia:"Foliar",un:"L",precos:{MG:61.08,MANHUACU:61.08,SP:61.08,CERRADO:60.00}},
-  {sku:"51",cod_coop:"63328",nome:"PRORECOVER TURBO Q - 05L",familia:"Foliar",un:"L",precos:{MG:47.57,MANHUACU:47.57,SP:47.57,CERRADO:46.73}},
-  {sku:"52",cod_coop:"63329",nome:"PRORECOVER TURBO Q - 20L",familia:"Foliar",un:"L",precos:{MG:44.05,MANHUACU:44.05,SP:44.05,CERRADO:43.28}},
-  {sku:"53",cod_coop:"63045",nome:"PRORECOVER PERFIL - 05L",familia:"Foliar",un:"L",precos:{MG:38.76,MANHUACU:38.76,SP:38.76,CERRADO:38.08}},
-  {sku:"54",cod_coop:"63054",nome:"PRORECOVER PERFIL - 20L",familia:"Foliar",un:"L",precos:{MG:37.00,MANHUACU:37.00,SP:37.00,CERRADO:36.35}},
-  {sku:"55",cod_coop:"",nome:"METTAPLUS - SC 1 KG",familia:"Biológico",un:"KG",precos:{MG:140.87,MANHUACU:140.87,SP:140.87,CERRADO:138.38}},
-  {sku:"56",cod_coop:"",nome:"TRICHOADVANCE - SC 1 KG",familia:"Biológico",un:"KG",precos:{MG:261.88,MANHUACU:261.88,SP:261.88,CERRADO:257.25}},
-  {sku:"57",cod_coop:"",nome:"BONVERO - SC 1 KG",familia:"Biológico",un:"KG",precos:{MG:163.39,MANHUACU:163.39,SP:163.39,CERRADO:160.50}},
-  {sku:"58",cod_coop:"",nome:"METTABASSI - SC 1 KG",familia:"Biológico",un:"KG",precos:{MG:286.60,MANHUACU:286.60,SP:286.60,CERRADO:281.53}}
+  {sku:"1",cod_coop:"59938",nome:"Fertilizante NPK 19-04-19 +0,3%B +0,3%ZN CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5816.94,MG_prazo:6184.37,MANHUACU_vista:5953.78,MANHUACU_prazo:6329.85,SP_vista:5811.68,SP_prazo:6178.77,CERRADO_vista:5864.31,CERRADO_prazo:6234.73}},
+  {sku:"2",cod_coop:"59934",nome:"Fertilizante NPK 19-04-19 +0,3%B +0,3%ZN CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5816.94,MG_prazo:6184.37,MANHUACU_vista:5953.78,MANHUACU_prazo:6329.85,SP_vista:5811.68,SP_prazo:6178.77,CERRADO_vista:5864.31,CERRADO_prazo:6234.73}},
+  {sku:"3",cod_coop:"59931",nome:"Fertilizante NPK 19-04-19 +0,3%B +0,3%ZN CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5816.94,MG_prazo:6184.37,MANHUACU_vista:5953.78,MANHUACU_prazo:6329.85,SP_vista:5811.68,SP_prazo:6178.77,CERRADO_vista:5864.31,CERRADO_prazo:6234.73}},
+  {sku:"4",cod_coop:"54333",nome:"Fertilizante NK 21-00-21 +3,27%S Mistura de Grânulos CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5610.21,MG_prazo:5964.58,MANHUACU_vista:5747.05,MANHUACU_prazo:6110.06,SP_vista:5604.94,SP_prazo:5958.98,CERRADO_vista:5657.57,CERRADO_prazo:6014.94}},
+  {sku:"5",cod_coop:"56194",nome:"Fertilizante NK 23-00-15 +0,5%B Granulado CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5723.98,MG_prazo:6085.54,MANHUACU_vista:5860.83,MANHUACU_prazo:6231.03,SP_vista:5718.72,SP_prazo:6079.94,CERRADO_vista:5771.35,CERRADO_prazo:6135.90}},
+  {sku:"6",cod_coop:"56193",nome:"Fertilizante NK 23-00-15 +0,5%B Granulado CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5723.98,MG_prazo:6085.54,MANHUACU_vista:5860.83,MANHUACU_prazo:6231.03,SP_vista:5718.72,SP_prazo:6079.94,CERRADO_vista:5771.35,CERRADO_prazo:6135.90}},
+  {sku:"7",cod_coop:"56192",nome:"Fertilizante NK 23-00-15 +0,5%B Granulado CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5723.98,MG_prazo:6085.54,MANHUACU_vista:5860.83,MANHUACU_prazo:6231.03,SP_vista:5718.72,SP_prazo:6079.94,CERRADO_vista:5771.35,CERRADO_prazo:6135.90}},
+  {sku:"8",cod_coop:"53781",nome:"Fertilizante NK 23-00-18 +3,5%S bag CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5651.25,MG_prazo:6008.22,MANHUACU_vista:5788.10,MANHUACU_prazo:6153.70,SP_vista:5645.99,SP_prazo:6002.62,CERRADO_vista:5698.62,CERRADO_prazo:6058.58}},
+  {sku:"9",cod_coop:"53780",nome:"Fertilizante NK 23-00-18 +3,5%S CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5651.25,MG_prazo:6008.22,MANHUACU_vista:5788.10,MANHUACU_prazo:6153.70,SP_vista:5645.99,SP_prazo:6002.62,CERRADO_vista:5698.62,CERRADO_prazo:6058.58}},
+  {sku:"10",cod_coop:"56867",nome:"Fertilizante NK 23-00-18 +3,5%S CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5651.25,MG_prazo:6008.22,MANHUACU_vista:5788.10,MANHUACU_prazo:6153.70,SP_vista:5645.99,SP_prazo:6002.62,CERRADO_vista:5698.62,CERRADO_prazo:6058.58}},
+  {sku:"11",cod_coop:"72997",nome:"Fertilizante NPK 24-04-14 +3%S Granulado CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5954.90,MG_prazo:6331.04,MANHUACU_vista:6091.74,MANHUACU_prazo:6476.53,SP_vista:5949.64,SP_prazo:6325.45,CERRADO_vista:6002.27,CERRADO_prazo:6381.40}},
+  {sku:"12",cod_coop:"72998",nome:"Fertilizante NPK 24-04-14 +3%S Granulado CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5954.90,MG_prazo:6331.04,MANHUACU_vista:6091.74,MANHUACU_prazo:6476.53,SP_vista:5949.64,SP_prazo:6325.45,CERRADO_vista:6002.27,CERRADO_prazo:6381.40}},
+  {sku:"13",cod_coop:"72999",nome:"Fertilizante NPK 24-04-14 +3%S Granulado CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5954.90,MG_prazo:6331.04,MANHUACU_vista:6091.74,MANHUACU_prazo:6476.53,SP_vista:5949.64,SP_prazo:6325.45,CERRADO_vista:6002.27,CERRADO_prazo:6381.40}},
+  {sku:"14",cod_coop:"56203",nome:"Fertilizante NK 26-00-12 Granulado CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5734.91,MG_prazo:6097.16,MANHUACU_vista:5871.76,MANHUACU_prazo:6242.65,SP_vista:5729.65,SP_prazo:6091.56,CERRADO_vista:5782.28,CERRADO_prazo:6147.52}},
+  {sku:"15",cod_coop:"56202",nome:"Fertilizante NK 26-00-12 Granulado CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5734.91,MG_prazo:6097.16,MANHUACU_vista:5871.76,MANHUACU_prazo:6242.65,SP_vista:5729.65,SP_prazo:6091.56,CERRADO_vista:5782.28,CERRADO_prazo:6147.52}},
+  {sku:"16",cod_coop:"56204",nome:"Fertilizante NK 26-00-12 Granulado CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5734.91,MG_prazo:6097.16,MANHUACU_vista:5871.76,MANHUACU_prazo:6242.65,SP_vista:5729.65,SP_prazo:6091.56,CERRADO_vista:5782.28,CERRADO_prazo:6147.52}},
+  {sku:"17",cod_coop:"54599",nome:"Fertilizante NP 28-08-00 CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:6270.30,MG_prazo:6666.36,MANHUACU_vista:6407.14,MANHUACU_prazo:6811.85,SP_vista:6265.04,SP_prazo:6660.77,CERRADO_vista:6317.67,CERRADO_prazo:6716.72}},
+  {sku:"18",cod_coop:"54600",nome:"Fertilizante NP 28-08-00 CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:6270.30,MG_prazo:6666.36,MANHUACU_vista:6407.14,MANHUACU_prazo:6811.85,SP_vista:6265.04,SP_prazo:6660.77,CERRADO_vista:6317.67,CERRADO_prazo:6716.72}},
+  {sku:"19",cod_coop:"54602",nome:"Fertilizante NP 28-08-00 CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:6270.30,MG_prazo:6666.36,MANHUACU_vista:6407.14,MANHUACU_prazo:6811.85,SP_vista:6265.04,SP_prazo:6660.77,CERRADO_vista:6317.67,CERRADO_prazo:6716.72}},
+  {sku:"20",cod_coop:"56198",nome:"Fertilizante NK 29-00-06 Granulado CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5816.52,MG_prazo:6183.92,MANHUACU_vista:5953.36,MANHUACU_prazo:6329.41,SP_vista:5811.26,SP_prazo:6178.33,CERRADO_vista:5863.89,CERRADO_prazo:6234.28}},
+  {sku:"21",cod_coop:"56197",nome:"Fertilizante NK 29-00-06 Granulado CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5816.52,MG_prazo:6183.92,MANHUACU_vista:5953.36,MANHUACU_prazo:6329.41,SP_vista:5811.26,SP_prazo:6178.33,CERRADO_vista:5863.89,CERRADO_prazo:6234.28}},
+  {sku:"22",cod_coop:"56196",nome:"Fertilizante NK 29-00-06 Granulado CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:5816.52,MG_prazo:6183.92,MANHUACU_vista:5953.36,MANHUACU_prazo:6329.41,SP_vista:5811.26,SP_prazo:6178.33,CERRADO_vista:5863.89,CERRADO_prazo:6234.28}},
+  {sku:"23",cod_coop:"67353",nome:"Fertilizante 37-00-00 + 4%S Granulado CICLUS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:6125.54,MG_prazo:6512.47,MANHUACU_vista:6262.39,MANHUACU_prazo:6657.95,SP_vista:6120.28,SP_prazo:6506.87,CERRADO_vista:6172.91,CERRADO_prazo:6562.83}},
+  {sku:"24",cod_coop:"67352",nome:"Fertilizante 37-00-00 + 4%S Granulado CICLUS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:6125.54,MG_prazo:6512.47,MANHUACU_vista:6262.39,MANHUACU_prazo:6657.95,SP_vista:6120.28,SP_prazo:6506.87,CERRADO_vista:6172.91,CERRADO_prazo:6562.83}},
+  {sku:"25",cod_coop:"67351",nome:"Fertilizante 37-00-00 +4%S Granulado CICLUS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:6125.54,MG_prazo:6512.47,MANHUACU_vista:6262.39,MANHUACU_prazo:6657.95,SP_vista:6120.28,SP_prazo:6506.87,CERRADO_vista:6172.91,CERRADO_prazo:6562.83}},
+  {sku:"26",cod_coop:"43208",nome:"Fertilizante CICLUS NS Farelado 30-00-00 + 7% S CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:6603.42,MG_prazo:7020.53,MANHUACU_vista:6740.27,MANHUACU_prazo:7166.02,SP_vista:6598.16,SP_prazo:7014.93,CERRADO_vista:6650.79,CERRADO_prazo:7070.89}},
+  {sku:"27",cod_coop:"53793",nome:"Fertilizante CICLUS NS Farelado 30-00-00 + 7% S CAFÉ BRASIL Big Bag 500 Kg",familia:"Ciclus",un:"Ton.",precos:{MG_vista:6603.42,MG_prazo:7020.53,MANHUACU_vista:6740.27,MANHUACU_prazo:7166.02,SP_vista:6598.16,SP_prazo:7014.93,CERRADO_vista:6650.79,CERRADO_prazo:7070.89}},
+  {sku:"28",cod_coop:"50243",nome:"Fertilizante 10-49-00 PROPHOS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:7628.62,MG_prazo:8110.48,MANHUACU_vista:7765.46,MANHUACU_prazo:8255.97,SP_vista:7623.36,SP_prazo:8104.89,CERRADO_vista:7675.99,CERRADO_prazo:8160.84}},
+  {sku:"29",cod_coop:"50244",nome:"Fertilizante 10-49-00 PROPHOS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:7628.62,MG_prazo:8110.48,MANHUACU_vista:7765.46,MANHUACU_prazo:8255.97,SP_vista:7623.36,SP_prazo:8104.89,CERRADO_vista:7675.99,CERRADO_prazo:8160.84}},
+  {sku:"30",cod_coop:"50245",nome:"Fertilizante 10-49-00 PROPHOS CAFÉ BRASIL (Ensacado 50 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:7628.62,MG_prazo:8110.48,MANHUACU_vista:7765.46,MANHUACU_prazo:8255.97,SP_vista:7623.36,SP_prazo:8104.89,CERRADO_vista:7675.99,CERRADO_prazo:8160.84}},
+  {sku:"31",cod_coop:"53771",nome:"Fertilizante 08-39-09 +0,3%B +0,3%Zn PROPHOS CAFÉ BRASIL (Big Bag 1000 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:7074.60,MG_prazo:7521.47,MANHUACU_vista:7211.44,MANHUACU_prazo:7666.95,SP_vista:7069.34,SP_prazo:7515.87,CERRADO_vista:7121.97,CERRADO_prazo:7571.83}},
+  {sku:"32",cod_coop:"53770",nome:"Fertilizante 08-39-09 +0,3%B +0,3%Zn PROPHOS CAFÉ BRASIL (Big Bag 500 Kg)",familia:"Ciclus",un:"Ton.",precos:{MG_vista:7074.60,MG_prazo:7521.47,MANHUACU_vista:7211.44,MANHUACU_prazo:7666.95,SP_vista:7069.34,SP_prazo:7515.87,CERRADO_vista:7121.97,CERRADO_prazo:7571.83}},
+  {sku:"33",cod_coop:"",nome:"Viça Café NG - 5 KG",familia:"Foliar",un:"Pct",precos:{MG_vista:103.23,MG_prazo:103.23,MANHUACU_vista:102.10,MANHUACU_prazo:102.10,SP_vista:101.38,SP_prazo:101.38,CERRADO_vista:89.26,CERRADO_prazo:89.26}},
+  {sku:"34",cod_coop:"",nome:"Viça Café Nutrição - 3 KG",familia:"Foliar",un:"Pct",precos:{MG_vista:33.68,MG_prazo:33.68,MANHUACU_vista:33.50,MANHUACU_prazo:33.50,SP_vista:33.07,SP_prazo:33.07,CERRADO_vista:74.38,CERRADO_prazo:74.38}},
+  {sku:"35",cod_coop:"",nome:"ALIANCE FULL - 01L",familia:"Adjuvante",un:"L",precos:{MG_vista:90.86,MG_prazo:90.86,MANHUACU_vista:90.86,MANHUACU_prazo:90.86,SP_vista:90.86,SP_prazo:90.86,CERRADO_vista:89.26,CERRADO_prazo:89.26}},
+  {sku:"36",cod_coop:"",nome:"ALIANCE FULL - 05L",familia:"Adjuvante",un:"L",precos:{MG_vista:75.72,MG_prazo:75.72,MANHUACU_vista:75.72,MANHUACU_prazo:75.72,SP_vista:75.72,SP_prazo:75.72,CERRADO_vista:74.38,CERRADO_prazo:74.38}},
+  {sku:"37",cod_coop:"",nome:"ALIANCE ACTION - 01L",familia:"Adjuvante",un:"L",precos:{MG_vista:112.74,MG_prazo:112.74,MANHUACU_vista:112.74,MANHUACU_prazo:112.74,SP_vista:112.74,SP_prazo:112.74,CERRADO_vista:110.74,CERRADO_prazo:110.74}},
+  {sku:"38",cod_coop:"",nome:"ALIANCE ACTION - 05L",familia:"Adjuvante",un:"L",precos:{MG_vista:96.75,MG_prazo:96.75,MANHUACU_vista:96.75,MANHUACU_prazo:96.75,SP_vista:96.75,SP_prazo:96.75,CERRADO_vista:95.04,CERRADO_prazo:95.04}},
+  {sku:"39",cod_coop:"63037",nome:"PRORECOVER FLORADA - 05L",familia:"Foliar",un:"L",precos:{MG_vista:36.00,MG_prazo:36.00,MANHUACU_vista:36.00,MANHUACU_prazo:36.00,SP_vista:36.00,SP_prazo:36.00,CERRADO_vista:35.36,CERRADO_prazo:35.36}},
+  {sku:"40",cod_coop:"63046",nome:"PRORECOVER FLORADA - 20L",familia:"Foliar",un:"L",precos:{MG_vista:32.72,MG_prazo:32.72,MANHUACU_vista:32.72,MANHUACU_prazo:32.72,SP_vista:32.72,SP_prazo:32.72,CERRADO_vista:32.14,CERRADO_prazo:32.14}},
+  {sku:"41",cod_coop:"63038",nome:"PRORECOVER RENEW - 05L",familia:"Foliar",un:"L",precos:{MG_vista:43.47,MG_prazo:43.47,MANHUACU_vista:43.47,MANHUACU_prazo:43.47,SP_vista:43.47,SP_prazo:43.47,CERRADO_vista:42.70,CERRADO_prazo:42.70}},
+  {sku:"42",cod_coop:"63047",nome:"PRORECOVER RENEW - 20L",familia:"Foliar",un:"L",precos:{MG_vista:41.11,MG_prazo:41.11,MANHUACU_vista:41.11,MANHUACU_prazo:41.11,SP_vista:41.11,SP_prazo:41.11,CERRADO_vista:40.39,CERRADO_prazo:40.39}},
+  {sku:"43",cod_coop:"63901",nome:"PRORECOVER POWER PLANT - 01L",familia:"Foliar",un:"L",precos:{MG_vista:101.61,MG_prazo:101.61,MANHUACU_vista:101.61,MANHUACU_prazo:101.61,SP_vista:101.61,SP_prazo:101.61,CERRADO_vista:99.81,CERRADO_prazo:99.81}},
+  {sku:"44",cod_coop:"63039",nome:"PRORECOVER POWER PLANT - 05L",familia:"Foliar",un:"L",precos:{MG_vista:88.11,MG_prazo:88.11,MANHUACU_vista:88.11,MANHUACU_prazo:88.11,SP_vista:88.11,SP_prazo:88.11,CERRADO_vista:86.55,CERRADO_prazo:86.55}},
+  {sku:"45",cod_coop:"63048",nome:"PRORECOVER POWER PLANT - 20L",familia:"Foliar",un:"L",precos:{MG_vista:84.57,MG_prazo:84.57,MANHUACU_vista:84.57,MANHUACU_prazo:84.57,SP_vista:84.57,SP_prazo:84.57,CERRADO_vista:83.08,CERRADO_prazo:83.08}},
+  {sku:"46",cod_coop:"63040",nome:"PRORECOVER RR - 05L",familia:"Foliar",un:"L",precos:{MG_vista:48.16,MG_prazo:48.16,MANHUACU_vista:48.16,MANHUACU_prazo:48.16,SP_vista:48.16,SP_prazo:48.16,CERRADO_vista:47.31,CERRADO_prazo:47.31}},
+  {sku:"47",cod_coop:"63049",nome:"PRORECOVER RR - 20L",familia:"Foliar",un:"L",precos:{MG_vista:42.30,MG_prazo:42.30,MANHUACU_vista:42.30,MANHUACU_prazo:42.30,SP_vista:42.30,SP_prazo:42.30,CERRADO_vista:41.55,CERRADO_prazo:41.55}},
+  {sku:"48",cod_coop:"63041",nome:"PRORECOVER SINK - 05L",familia:"Foliar",un:"L",precos:{MG_vista:35.27,MG_prazo:35.27,MANHUACU_vista:35.27,MANHUACU_prazo:35.27,SP_vista:35.27,SP_prazo:35.27,CERRADO_vista:34.65,CERRADO_prazo:34.65}},
+  {sku:"49",cod_coop:"63050",nome:"PRORECOVER SINK - 20L",familia:"Foliar",un:"L",precos:{MG_vista:32.30,MG_prazo:32.30,MANHUACU_vista:32.30,MANHUACU_prazo:32.30,SP_vista:32.30,SP_prazo:32.30,CERRADO_vista:31.72,CERRADO_prazo:31.72}},
+  {sku:"50",cod_coop:"",nome:"PRORECOVER TURBO Q - 01L",familia:"Foliar",un:"L",precos:{MG_vista:61.08,MG_prazo:61.08,MANHUACU_vista:61.08,MANHUACU_prazo:61.08,SP_vista:61.08,SP_prazo:61.08,CERRADO_vista:60.00,CERRADO_prazo:60.00}},
+  {sku:"51",cod_coop:"63328",nome:"PRORECOVER TURBO Q - 05L",familia:"Foliar",un:"L",precos:{MG_vista:47.57,MG_prazo:47.57,MANHUACU_vista:47.57,MANHUACU_prazo:47.57,SP_vista:47.57,SP_prazo:47.57,CERRADO_vista:46.73,CERRADO_prazo:46.73}},
+  {sku:"52",cod_coop:"63329",nome:"PRORECOVER TURBO Q - 20L",familia:"Foliar",un:"L",precos:{MG_vista:44.05,MG_prazo:44.05,MANHUACU_vista:44.05,MANHUACU_prazo:44.05,SP_vista:44.05,SP_prazo:44.05,CERRADO_vista:43.28,CERRADO_prazo:43.28}},
+  {sku:"53",cod_coop:"63045",nome:"PRORECOVER PERFIL - 05L",familia:"Foliar",un:"L",precos:{MG_vista:38.76,MG_prazo:38.76,MANHUACU_vista:38.76,MANHUACU_prazo:38.76,SP_vista:38.76,SP_prazo:38.76,CERRADO_vista:38.08,CERRADO_prazo:38.08}},
+  {sku:"54",cod_coop:"63054",nome:"PRORECOVER PERFIL - 20L",familia:"Foliar",un:"L",precos:{MG_vista:37.00,MG_prazo:37.00,MANHUACU_vista:37.00,MANHUACU_prazo:37.00,SP_vista:37.00,SP_prazo:37.00,CERRADO_vista:36.35,CERRADO_prazo:36.35}},
+  {sku:"55",cod_coop:"",nome:"METTAPLUS - SC 1 KG",familia:"Biológico",un:"KG",precos:{MG_vista:140.87,MG_prazo:140.87,MANHUACU_vista:140.87,MANHUACU_prazo:140.87,SP_vista:140.87,SP_prazo:140.87,CERRADO_vista:138.38,CERRADO_prazo:138.38}},
+  {sku:"56",cod_coop:"",nome:"TRICHOADVANCE - SC 1 KG",familia:"Biológico",un:"KG",precos:{MG_vista:261.88,MG_prazo:261.88,MANHUACU_vista:261.88,MANHUACU_prazo:261.88,SP_vista:261.88,SP_prazo:261.88,CERRADO_vista:257.25,CERRADO_prazo:257.25}},
+  {sku:"57",cod_coop:"",nome:"BONVERO - SC 1 KG",familia:"Biológico",un:"KG",precos:{MG_vista:163.39,MG_prazo:163.39,MANHUACU_vista:163.39,MANHUACU_prazo:163.39,SP_vista:163.39,SP_prazo:163.39,CERRADO_vista:160.50,CERRADO_prazo:160.50}},
+  {sku:"58",cod_coop:"",nome:"METTABASSI - SC 1 KG",familia:"Biológico",un:"KG",precos:{MG_vista:286.60,MG_prazo:286.60,MANHUACU_vista:286.60,MANHUACU_prazo:286.60,SP_vista:286.60,SP_prazo:286.60,CERRADO_vista:281.53,CERRADO_prazo:281.53}}
 ];
 
 let pedido = [];
 let DIVISOR_SOLOS = 0.900;       // Ciclus / PROPhós
 let DIVISOR_TRAT  = 0.900;       // Foliar / Adjuvante / Biológico
 let REGIAO_ATIVA = "MG";         // MG / MANHUACU / SP / CERRADO
+let CONDICAO_ATIVA = "prazo";    // vista / prazo
 
 const REGIOES_LABEL = {MG:"MG (Minas Gerais)", MANHUACU:"Manhuaçu (Zona da Mata)", SP:"São Paulo", CERRADO:"Cerrado Mineiro"};
+const CONDICOES_LABEL = {vista:"À Vista", prazo:"A Prazo (30/09/2026)"};
 
 const fmtBRL = v => "R$ " + (v||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtNum = (v,d=2) => (v||0).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
 const fmtPct = p => (p*100).toLocaleString("pt-BR",{minimumFractionDigits:0,maximumFractionDigits:1});
 
-// Pega preço de tabela conforme região ativa do produto
+// Pega preço de tabela conforme região + condição ativas
 function precoTabela(prod){
-  return prod.precos[REGIAO_ATIVA];
+  const chave = REGIAO_ATIVA + "_" + CONDICAO_ATIVA;
+  return prod.precos[chave];
 }
 // Preço apresentado ao cliente (com margem aplicada conforme família)
 function precoCliente(prod){
@@ -1020,7 +1067,9 @@ function iniciarSimulacao(){
   DIVISOR_SOLOS = 1 - (pctS/100);
   DIVISOR_TRAT  = 1 - (pctT/100);
 
-  // Capturar região selecionada
+  // Capturar condição de pagamento e região selecionadas
+  const radioCond = document.querySelector('input[name="s-condicao"]:checked');
+  CONDICAO_ATIVA = radioCond ? radioCond.value : "prazo";
   const radioRegiao = document.querySelector('input[name="s-regiao"]:checked');
   REGIAO_ATIVA = radioRegiao ? radioRegiao.value : "MG";
 
@@ -1030,6 +1079,7 @@ function iniciarSimulacao(){
   // Preencher display
   document.getElementById("d-cliente").textContent = cliente;
   document.getElementById("d-doc").textContent = document.getElementById("s-doc").value || "—";
+  document.getElementById("d-condicao").textContent = CONDICOES_LABEL[CONDICAO_ATIVA] || CONDICAO_ATIVA;
   document.getElementById("d-regiao").textContent = REGIOES_LABEL[REGIAO_ATIVA] || REGIAO_ATIVA;
   document.getElementById("d-unidade").textContent = document.getElementById("s-unidade").value || "—";
   document.getElementById("d-consultor").textContent = document.getElementById("s-consultor").value || "—";
@@ -1180,6 +1230,7 @@ async function registrarPedido(){
     data_local: new Date().toLocaleString("pt-BR"),
     cliente:   document.getElementById("d-cliente").textContent,
     cpf_cnpj:  document.getElementById("d-doc").textContent,
+    condicao:  CONDICOES_LABEL[CONDICAO_ATIVA] || CONDICAO_ATIVA,
     regiao:    REGIOES_LABEL[REGIAO_ATIVA] || REGIAO_ATIVA,
     unidade:   document.getElementById("d-unidade").textContent,
     consultor: document.getElementById("d-consultor").textContent,
@@ -1241,6 +1292,7 @@ function exportarXLS(){
     ["DADOS DA PROPOSTA"],
     ["Cliente",   document.getElementById("d-cliente").textContent],
     ["CPF/CNPJ",  document.getElementById("d-doc").textContent],
+    ["Condição",  CONDICOES_LABEL[CONDICAO_ATIVA] || CONDICAO_ATIVA],
     ["Região",    REGIOES_LABEL[REGIAO_ATIVA] || REGIAO_ATIVA],
     ["Unidade",   document.getElementById("d-unidade").textContent],
     ["Consultor Cooperativa", document.getElementById("d-consultor").textContent],
